@@ -9,7 +9,7 @@ import { buildModelsRequest } from "../../src/oauth";
 import { KEY_LOGIN_PROVIDERS, validateApiKey } from "../../src/oauth/key-providers";
 import { deriveInitProviders, deriveKeyLoginMap, deriveProviderPresets, providerConfigSeed } from "../../src/providers/derive";
 import { extractProviderModelItems, providerModelDiscoverySpecError, resolveProviderModelDiscovery } from "../../src/providers/model-discovery";
-import { PROVIDER_REGISTRY } from "../../src/providers/registry";
+import { PROVIDER_REGISTRY, withoutRegistryStaticHeaderCopies } from "../../src/providers/registry";
 import { routeModel } from "../../src/router";
 import { startServer } from "../../src/server";
 import { resolveWireProtocolOverride } from "../../src/server/adapter-resolve";
@@ -211,13 +211,21 @@ describe("AI/ML API attribution headers", () => {
     for (const [name] of attribution()) expect(upstream[0]!.headers.has(name)).toBe(false);
   });
 
-  test("a header the operator set on a retargeted row is still sent", async () => {
+  test("on a retargeted row, headers named like the preset's are dropped and others are sent", async () => {
+    // A copy seeded by an older release carries a different value; it must not follow the row either.
     await send({ ...providerConfigSeed(entry()), baseUrl: RELAY, apiKey: "fixture-relay-key",
-      headers: { "X-AIMLAPI-Source": "my-own-tag", "X-Relay-Tenant": "team-a" } });
+      headers: { "X-AIMLAPI-Partner-ID": "part_seededByAnOlderRelease", "X-Relay-Tenant": "team-a" } });
     const chat = upstream.filter(call => call.url === `${RELAY}/chat/completions`);
     expect(chat).toHaveLength(1);
-    expect(chat[0]!.headers.get("X-AIMLAPI-Source")).toBe("my-own-tag");
     expect(chat[0]!.headers.get("X-Relay-Tenant")).toBe("team-a");
-    expect(chat[0]!.headers.has("X-AIMLAPI-Partner-ID")).toBe(false);
+    for (const [name] of attribution()) expect(chat[0]!.headers.has(name)).toBe(false);
+  });
+
+  test("a row still on api.aimlapi.com keeps its headers when its transport differs from the preset", () => {
+    const seeded = providerConfigSeed(entry());
+    const sameHost = { ...seeded, baseUrl: "https://api.aimlapi.com/v1beta", adapter: "openai-responses" as const };
+    expect(withoutRegistryStaticHeaderCopies(entry(), sameHost)).toEqual(seeded.headers);
+    const otherHost = { ...seeded, baseUrl: "https://api.aimlapi.com.relay.example.test/v1" };
+    expect(withoutRegistryStaticHeaderCopies(entry(), otherHost)).toBeUndefined();
   });
 });

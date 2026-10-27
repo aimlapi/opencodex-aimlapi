@@ -72,24 +72,40 @@ export function mergeRegistryStaticHeaders(
 }
 
 /**
- * A row's headers without the copies of its registry `staticHeaders`, for a row that no longer
- * targets the registry destination.
+ * A row's headers without its registry `staticHeaders`, for a row whose transport no longer
+ * matches the registry entry.
  *
  * `providerConfigSeed` writes the registry headers into the saved row, and a
  * `preserveCustomDestination` preset keeps a row whose `baseUrl` was changed afterwards
  * (`ocx provider add <id> --base-url`, a config edit). Without this, headers meant for the
- * preset's host would follow the row to the new one. Only exact copies (same name, ignoring
- * case, and same value) are dropped; a header the operator wrote or changed is kept.
+ * preset's host would follow the row to the new one. While the row still targets the registry
+ * host (same scheme and hostname; only the path or adapter changed) its headers are kept as
+ * they are. Otherwise every header named like a registry static header is dropped, whatever its
+ * value, so a copy seeded by an older release with a different value does not follow the row
+ * either; headers with other names are kept.
  */
 export function withoutRegistryStaticHeaderCopies(
-  staticHeaders: Readonly<Record<string, string>> | undefined,
-  headers: Record<string, string> | undefined,
+  entry: Readonly<Pick<ProviderRegistryEntry, "staticHeaders" | "baseUrl">> | undefined,
+  row: Readonly<Pick<OcxProviderConfig, "baseUrl" | "headers">>,
 ): Record<string, string> | undefined {
-  if (!staticHeaders || !headers) return headers;
-  const copies = new Map(Object.entries(staticHeaders).map(([name, value]) => [name.toLowerCase(), value]));
-  const kept = Object.entries(headers).filter(([name, value]) => copies.get(name.toLowerCase()) !== value);
+  const headers = row.headers;
+  if (!entry?.staticHeaders || !headers) return headers;
+  if (sameOrigin(entry.baseUrl, row.baseUrl || entry.baseUrl)) return headers;
+  const owned = new Set(Object.keys(entry.staticHeaders).map(name => name.toLowerCase()));
+  const kept = Object.entries(headers).filter(([name]) => !owned.has(name.toLowerCase()));
   if (kept.length === Object.keys(headers).length) return headers;
   return kept.length > 0 ? Object.fromEntries(kept) : undefined;
+}
+
+function sameOrigin(a: string | undefined, b: string | undefined): boolean {
+  if (!a || !b) return false;
+  try {
+    const left = new URL(a);
+    const right = new URL(b);
+    return left.protocol === right.protocol && left.hostname === right.hostname && left.port === right.port;
+  } catch {
+    return false;
+  }
 }
 
 /** Whether this registry row's per-model service-tier evidence applies to one configured target. */

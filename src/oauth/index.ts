@@ -1217,13 +1217,13 @@ export function buildModelsRequest(
   // static headers the inference path does. Without this a provider is identified correctly
   // when it answers a completion but anonymously when it lists its own models, which is the
   // kind of split fingerprint an upstream rate limiter reads as two different clients.
-  // A row retargeted away from its preset keeps its own headers, not the seeded registry copies.
+  // A row retargeted to another host keeps its own headers, not the preset's ones.
   const registryEntry = getProviderRegistryEntry(providerName);
   const transportMatched = providerMatchesRegistryTransport(providerName, effectiveProvider);
   const headers: Record<string, string> = {
     ...((transportMatched
       ? mergeRegistryStaticHeaders(registryEntry?.staticHeaders, effectiveProvider.headers)
-      : withoutRegistryStaticHeaderCopies(registryEntry?.staticHeaders, effectiveProvider.headers)) ?? {}),
+      : withoutRegistryStaticHeaderCopies(registryEntry, effectiveProvider)) ?? {}),
   };
   const discoveryUrl = (defaultUrl: string): string => resolveProviderModelDiscoveryUrl(
     providerName,

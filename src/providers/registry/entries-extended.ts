@@ -1338,7 +1338,7 @@ export const PROVIDER_REGISTRY_EXTENDED: readonly ProviderRegistryEntry[] = [
     authKind: "key",
     dashboardUrl: "https://aimlapi.com/app/keys",
     // Client attribution requested by AI/ML API. Registry static headers reach the upstream only
-    // while the row still targets this exact endpoint (providerMatchesRegistryTransport).
+    // while the row still targets this host (withoutRegistryStaticHeaderCopies).
     staticHeaders: {
       "X-AIMLAPI-Source": "agent/opencodex",
       "X-AIMLAPI-Partner-ID": "part_FwTskAwKV3EJU7Du1hqXx75d",
@@ -1360,6 +1360,8 @@ export const PROVIDER_REGISTRY_EXTENDED: readonly ProviderRegistryEntry[] = [
       "z-ai/glm-5.3-flash": 1_048_576,
       "moonshot/kimi-k3": 1_048_576,
     },
+    // moonshot/kimi-k3 has no output cap here: /v1/models gives it no `outputMax` and its
+    // docs-json sets no maximum for max_tokens, so there is no published value to seed.
     modelMaxOutputTokens: {
       "openai/gpt-5.6-terra": 128_000,
       "openai/gpt-6.1-terra": 128_000,

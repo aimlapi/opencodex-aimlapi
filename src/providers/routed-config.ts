@@ -124,8 +124,8 @@ export function routedProviderConfig(providerName: string, provider: OcxProvider
     const destination = registryEntryForProviderDestination(provider);
     const inputModalities = provider.inputModalities === undefined
       ? registryInputModalitiesForDestination(providerName, provider) : undefined;
-    // A same-named row retargeted elsewhere keeps its own headers, not the preset's seeded copies.
-    const headers = withoutRegistryStaticHeaderCopies(registryEntry?.staticHeaders, provider.headers);
+    // A same-named row retargeted to another host keeps its own headers, not the preset's ones.
+    const headers = withoutRegistryStaticHeaderCopies(registryEntry, provider);
     const { headers: _savedHeaders, ...rest } = provider;
     return {
       ...rest,
