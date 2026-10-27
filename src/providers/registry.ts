@@ -71,6 +71,27 @@ export function mergeRegistryStaticHeaders(
   return merged;
 }
 
+/**
+ * A row's headers without the copies of its registry `staticHeaders`, for a row that no longer
+ * targets the registry destination.
+ *
+ * `providerConfigSeed` writes the registry headers into the saved row, and a
+ * `preserveCustomDestination` preset keeps a row whose `baseUrl` was changed afterwards
+ * (`ocx provider add <id> --base-url`, a config edit). Without this, headers meant for the
+ * preset's host would follow the row to the new one. Only exact copies (same name, ignoring
+ * case, and same value) are dropped; a header the operator wrote or changed is kept.
+ */
+export function withoutRegistryStaticHeaderCopies(
+  staticHeaders: Readonly<Record<string, string>> | undefined,
+  headers: Record<string, string> | undefined,
+): Record<string, string> | undefined {
+  if (!staticHeaders || !headers) return headers;
+  const copies = new Map(Object.entries(staticHeaders).map(([name, value]) => [name.toLowerCase(), value]));
+  const kept = Object.entries(headers).filter(([name, value]) => copies.get(name.toLowerCase()) !== value);
+  if (kept.length === Object.keys(headers).length) return headers;
+  return kept.length > 0 ? Object.fromEntries(kept) : undefined;
+}
+
 /** Whether this registry row's per-model service-tier evidence applies to one configured target. */
 export function registryModelServiceTierCapabilityApplies(
   entry: Pick<ProviderRegistryEntry, "modelServiceTierCapabilityBaseUrlGuard">,

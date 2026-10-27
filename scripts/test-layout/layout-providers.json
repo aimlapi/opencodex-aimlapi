@@ -1,3 +1,4 @@
 {
-  "free-directory-runcrate.test.ts": "providers"
+  "free-directory-runcrate.test.ts": "providers",
+  "aimlapi-provider.test.ts": "providers"
 }

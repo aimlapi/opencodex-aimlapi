@@ -320,6 +320,7 @@ do not. The 30-second, 128-entry cache rechecks capacity at insertion time.
 
 Preset discovery, Responses input projection and bounded empty-completion recovery follow
 [the OpenGateway contract](providers/opengateway.md).
+AI/ML API type-filtered discovery and destination-bound attribution headers follow [the AI/ML API contract](providers/aimlapi.md).
 
 ## TokenLab chat provider
 
