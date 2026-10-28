@@ -6,9 +6,14 @@ and only the row `type` tells them apart, so registry-owned discovery admits row
 `openai/chat-completions`. The catalog answers 200 for any Bearer value, so key validation is
 `unknown`. Seven vendor-prefixed chat ids are seeded with their catalog context and output limits.
 The preset's `staticHeaders` carry `X-AIMLAPI-Source` and `X-AIMLAPI-Partner-ID` attribution.
-Registry static headers reach an upstream only while the row matches the registry transport; for a
-same-named row retargeted to another URL, `withoutRegistryStaticHeaderCopies` in
-`src/providers/registry.ts` drops the seeded copies on inference (`src/providers/routed-config.ts`)
-and model discovery (`src/oauth/index.ts`), while a header the operator wrote or changed is kept.
+Registry static headers are merged only while the row matches the registry transport. For a
+same-named row that no longer matches, `withoutRegistryStaticHeaderCopies` in
+`src/providers/registry.ts` decides on inference (`src/providers/routed-config.ts`) and model
+discovery (`src/oauth/index.ts`): if the row still targets the registry origin (same scheme, host
+and port; only the path or adapter changed) its headers are sent as saved; if it targets another
+origin, every header named like a preset static header is dropped, whatever its value (so an older
+seeded copy, or one the operator edited, does not follow the row), and headers with other names
+are kept.
 `tests/providers/aimlapi-provider.test.ts` covers derived entry points, type-filtered discovery,
-key validation, routing, and the headers on the wire for the preset and a retargeted row.
+key validation, routing, and the headers on the wire for the preset, a row retargeted to another
+host, and a row that stays on the registry host with another path or adapter.
