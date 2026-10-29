@@ -1,5 +1,6 @@
 {
   "free-directory-runcrate.test.ts": "providers",
   "aimlapi-provider.test.ts": "providers",
+  "cc-switch-import.test.ts": "providers",
   "kiro-completion-with-real-tools.test.ts": "providers/kiro"
 }
