@@ -620,6 +620,7 @@
       "documents": [
         "src/providers/registry/entries-extended.ts",
         "src/providers/registry.ts",
+        "src/providers/registry-static-headers.ts",
         "src/providers/routed-config.ts",
         "src/oauth/index.ts"
       ]

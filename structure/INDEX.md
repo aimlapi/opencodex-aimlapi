@@ -355,6 +355,7 @@ A source area can be described by more than one doc, because these docs are orga
 | `src/providers/quota/anthropic-account-quota.ts` | [`providers/anthropic-account-pool.md`](providers/anthropic-account-pool.md) |
 | `src/providers/quota/dsh-account.ts` | [`providers/dsh-account.md`](providers/dsh-account.md) |
 | `src/providers/quota/workbuddy.ts` | [`providers/workbuddy.md`](providers/workbuddy.md) |
+| `src/providers/registry-static-headers.ts` | [`providers/aimlapi.md`](providers/aimlapi.md) |
 | `src/providers/registry.ts` | [`providers/aimlapi.md`](providers/aimlapi.md) |
 | `src/providers/registry/entries-extended.ts` | [`providers/aimlapi.md`](providers/aimlapi.md) |
 | `src/providers/request-pacing.ts` | [`providers/anthropic-key-billing.md`](providers/anthropic-key-billing.md) |

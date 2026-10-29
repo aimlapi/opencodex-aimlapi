@@ -8,8 +8,8 @@ and only the row `type` tells them apart, so registry-owned discovery admits row
 The preset's `staticHeaders` carry `X-AIMLAPI-Source` and `X-AIMLAPI-Partner-ID` attribution.
 Registry static headers are merged only while the row matches the registry transport. For a
 same-named row that no longer matches, `withoutRegistryStaticHeaderCopies` in
-`src/providers/registry.ts` decides on inference (`src/providers/routed-config.ts`) and model
-discovery (`src/oauth/index.ts`): if the row still targets the registry origin (same scheme, host
+`src/providers/registry-static-headers.ts` (re-exported from `src/providers/registry.ts`) decides
+on inference (`src/providers/routed-config.ts`) and model discovery (`src/oauth/index.ts`): if the row still targets the registry origin (same scheme, host
 and port; only the path or adapter changed) its headers are sent as saved; if it targets another
 origin, every header named like a preset static header is dropped, whatever its value (so an older
 seeded copy, or one the operator edited, does not follow the row), and headers with other names
