@@ -975,9 +975,6 @@ Seven models are seeded and were verified with chat, streaming and tool calls: `
 [model catalog](https://docs.aimlapi.com/api-references/model-database) and keeps only rows whose
 `type` is `openai/chat-completions`, so image, video, audio and embedding models do not appear in
 the picker. The catalog is public, so the dashboard cannot verify a key before the first request.
-Requests to `https://api.aimlapi.com` carry two attribution headers, `X-AIMLAPI-Source` and
-`X-AIMLAPI-Partner-ID`; a header you set yourself with the same name takes precedence there. When
-the provider points at another host, no header with either name is sent, including one you set.
 
 The MiniMax and MiniMax (CN) provider cards can also show Coding Plan quota when the configured
 key has an active plan. The dashboard reads the plan's 5-hour window and, when present, weekly

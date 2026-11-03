@@ -1337,12 +1337,6 @@ export const PROVIDER_REGISTRY_EXTENDED: readonly ProviderRegistryEntry[] = [
     baseUrl: "https://api.aimlapi.com/v1",
     authKind: "key",
     dashboardUrl: "https://aimlapi.com/app/keys",
-    // Client attribution requested by AI/ML API. Registry static headers reach the upstream only
-    // while the row still targets this host (withoutRegistryStaticHeaderCopies).
-    staticHeaders: {
-      "X-AIMLAPI-Source": "agent/opencodex",
-      "X-AIMLAPI-Partner-ID": "part_FwTskAwKV3EJU7Du1hqXx75d",
-    },
     liveModels: true,
     apiKeyValidation: "unknown",
     preserveCustomDestination: true,
@@ -1383,7 +1377,7 @@ export const PROVIDER_REGISTRY_EXTENDED: readonly ProviderRegistryEntry[] = [
       path: "models",
       filter: { allOf: [{ path: ["type"], equalsAny: ["openai/chat-completions"] }] },
     },
-    note: "OpenAI-compatible gateway with one key for OpenAI, Anthropic, Google, DeepSeek, GLM, Kimi and other chat models. Model ids carry the vendor prefix (openai/gpt-5.6-terra). Live discovery lists only the Chat Completions models from the public catalog; image, video, audio and embedding models are left out. The public catalog cannot validate keys. Requests to api.aimlapi.com carry X-AIMLAPI-Source and X-AIMLAPI-Partner-ID attribution headers.",
+    note: "OpenAI-compatible gateway with one key for OpenAI, Anthropic, Google, DeepSeek, GLM, Kimi and other chat models. Model ids carry the vendor prefix (openai/gpt-5.6-terra). Live discovery lists only the Chat Completions models from the public catalog; image, video, audio and embedding models are left out. The public catalog cannot validate keys.",
   },
   // Xiaomi retires mimo-v2.5 and mimo-v2.5-pro on 2026-10-21 with no redirect
   // (https://mimo.mi.com/docs/en-US/updates/deprecate), so the first-party presets default to V2.6.
